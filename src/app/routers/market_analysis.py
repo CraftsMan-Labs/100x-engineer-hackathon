@@ -8,6 +8,9 @@ from app.exa import ExaAPI
 from app.schemas.llm import ChatRequest, Message
 from app.config import get_settings
 
+from app.routers.prompts import (breakdown_problem_prompt, analyze_search_results_prompt,
+    compile_comprehensive_report_prompt)
+
 router = APIRouter(prefix="/market-analysis", tags=["market_analysis"])
 
 
@@ -57,11 +60,7 @@ class MarketAnalyzer:
         messages = [
             Message(
                 role="system",
-                content="""
-            You are an expert problem decomposition assistant. 
-            Break down complex queries into 5-10 distinct, focused sub-problems.
-            Ensure each sub-problem is specific, actionable, and provides a different perspective.
-            """,
+                content=breakdown_problem_prompt,
             ),
             Message(
                 role="user",
@@ -117,11 +116,7 @@ class MarketAnalyzer:
         messages = [
             Message(
                 role="system",
-                content="""
-            You are an expert research analyst. 
-            Synthesize the provided search results into a clear, concise report.
-            Focus on key insights, trends, and actionable information.
-            """,
+                content=analyze_search_results_prompt,
             ),
             Message(
                 role="user",
@@ -254,11 +249,7 @@ class MarketAnalyzer:
         messages = [
             Message(
                 role="system",
-                content="""
-            You are a master report compiler. 
-            Synthesize individual research reports into a comprehensive, cohesive document.
-            Highlight interconnections, overarching themes, and strategic insights.
-            """,
+                content=compile_comprehensive_report_prompt
             ),
             Message(
                 role="user",

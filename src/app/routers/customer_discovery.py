@@ -5,6 +5,8 @@ from app.jina import JinaReader
 from app.exa import ExaAPI
 from app.config import get_settings
 from app.schemas.llm import ChatRequest, Message
+from app.routers.prompts import generate_high_level_query_prompt, identify_market_niches_prompt,generate_niche_search_query
+
 from fastapi import APIRouter
 
 
@@ -62,21 +64,14 @@ class CustomerDiscoverer:
 
     def generate_high_level_query(self) -> str:
         """Generate a high-level market research query"""
-        prompt = f"""
-        Generate a comprehensive market research query for understanding customer markets in the {self.domain} domain.
-        Focus on identifying key customer segments, workflows, and market characteristics.
-        """
+        prompt = generate_high_level_query_prompt(self.domain)
         return self.llm.generate(
             ChatRequest(messages=[Message(role="user", content=prompt)])
         )
 
     def identify_market_niches(self, high_level_query: str) -> List[str]:
         """Identify potential market niches within the domain"""
-        prompt = f"""
-        Based on the high-level market research query: '{high_level_query}'
-        Identify and list 5-10 specific market niches within the {self.domain} domain.
-        For each niche, provide a brief description and potential market significance.
-        """
+        prompt = identify_market_niches_prompt(high_level_query, self.domain)
         niches_response = self.llm.generate(
             ChatRequest(
                 messages=[Message(role="user", content=prompt)],
@@ -88,11 +83,7 @@ class CustomerDiscoverer:
 
     def generate_niche_search_query(self, niche: str) -> str:
         """Generate a targeted search query for a specific niche"""
-        prompt = f"""
-        Create a precise internet search query to research the following market niche: '{niche}'
-        in the context of the {self.domain} domain. 
-        Focus on customer characteristics, market size, and key trends.
-        """
+        prompt = generate_niche_search_query(niche,self.domain)
         return self.llm.generate(
             ChatRequest(messages=[Message(role="user", content=prompt)])
         )
