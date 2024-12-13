@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "100x-engineer-hackathon"
+version = "0.1.0"
+description = ""
+authors = ["Rishub C R (Craftsman) <54368593+CraftsMan-Labs@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.10.1"
+litellm = "^1.52.14"
+mypy = "^1.13.0"
+ruff = "^0.8.0"
+python-dotenv = "^1.0.1"
+exa-py = "^1.6.0"
+sqlalchemy = "^2.0.36"
+sqlalchemy-utils = "^0.41.2"
+pydantic-settings = "^2.6.1"
+matplotlib = "^3.9.2"
+pillow = "^11.0.0"
+reportlab = "^4.2.5"
+plotly = "^5.24.1"
+mem0ai = "^0.1.34"
+pinecone-client = "^5.0.1"
+neo4j = "^5.27.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
