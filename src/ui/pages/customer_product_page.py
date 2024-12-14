@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from database import save_product, get_user_products
+from database import save_product, get_user_products, update_product
 
 def show_customer_product_page():
     st.header("Product Details Management")
