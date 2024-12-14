@@ -50,20 +50,22 @@ def auth_page():
 def main_app():
     st.title(f"Welcome to Market Edge Analyzer, {st.session_state.email}!")
 
-    if st.button("Logout"):
-        st.session_state.authenticated = False
-        st.session_state.email = None
-        st.rerun()
+    # Only show sidebar and navigation after authentication
+    if st.session_state.authenticated:
+        if st.button("Logout"):
+            st.session_state.authenticated = False
+            st.session_state.email = None
+            st.rerun()
 
-    # Sidebar navigation
-    page = st.sidebar.radio(
-        "Navigation", 
-        ["Market Analysis", "Competition Analysis", "Customer Discovery", 
-         "Market Visualization", "Market Expansion", "Product Evolution",
-         "Chat", "View Reports"]
-    )
+        # Sidebar navigation
+        page = st.sidebar.radio(
+            "Navigation", 
+            ["Market Analysis", "Competition Analysis", "Customer Discovery", 
+             "Market Visualization", "Market Expansion", "Product Evolution",
+             "Chat", "View Reports"]
+        )
 
-    if page == "Market Analysis":
+        if page == "Market Analysis":
         from pages.market_analysis_page import show_market_analysis_page
         show_market_analysis_page()
     elif page == "Competition Analysis":
