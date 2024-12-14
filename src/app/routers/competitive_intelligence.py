@@ -89,13 +89,56 @@ class CompetitiveAnalyzer:
         logger.info(f"Searching competitors for {target_product}")
 
         # Construct a more targeted search query
-        search_query = (
-            f'"{target_product}" '  # Exact product name match
-            f'("{target_description}") '  # Description in context
-            f'(competitor OR alternative OR "market leader" OR "similar product") '
-            f"(features OR pricing OR comparison OR review) "
-            f"-job -careers"  # Exclude job postings
-        )
+        search_query = f"""You are an intelligent system tasked with generating optimized search queries to identify and analyze competitors for a specific product. Follow the instructions below to construct an effective search query.
+
+**Input Variables:**
+- `{target_product}`: The exact name of the product you want to analyze.
+- `{target_description}`: A concise description of the target product.
+
+**Instructions:**
+
+1. **Exact Product Name Match:**
+   - Include the exact product name to ensure precision in search results.
+   - Format: `"{target_product}"`
+
+2. **Product Description Context:**
+   - Incorporate the product description to provide context and refine the search scope.
+   - Format: `("{target_description}")`
+
+3. **Competitor Identification Keywords:**
+   - Use keywords that indicate competitor-related content.
+   - Include variations to capture different ways competitors might be referenced.
+   - Suggested Keywords: `competitor`, `alternative`, `"market leader"`, `"similar product"`
+   - Format: `(competitor OR alternative OR "market leader" OR "similar product")`
+
+4. **Feature and Comparison Focus:**
+   - Add terms that focus on features, pricing, comparisons, and reviews to gather detailed competitor information.
+   - Suggested Terms: `features`, `pricing`, `comparison`, `review`
+   - Format: `(features OR pricing OR comparison OR review)`
+
+5. **Exclude Irrelevant Content:**
+   - Remove search results related to job postings and career opportunities to maintain relevance.
+   - Exclude Terms: `-job`, `-careers`
+   - Format: `-job -careers`
+
+6. **Combine All Elements:**
+   - Concatenate all the above components to form a comprehensive search query.
+   - Ensure proper spacing and syntax for optimal search engine performance.
+
+**Output Format:**
+- The final search query should be a single string that combines all the elements as specified.
+
+**Example Output:**
+
+```python
+search_query = (
+    f'"{target_product}" '  # Exact product name match
+    f'("{target_description}") '  # Description in context
+    f'(competitor OR alternative OR "market leader" OR "similar product") '
+    f'(features OR pricing OR comparison OR review) '
+    f'-job -careers'  # Exclude job postings
+)
+        """
 
         try:
             search_results = await asyncio.to_thread(
@@ -110,17 +153,39 @@ class CompetitiveAnalyzer:
             return []
 
         analysis_prompt = f"""
-        Based on the search results, identify and analyze the top competitors for {self.product_name}.
-        Focus on companies that directly compete with {self.product_description}.
-        
-        Return the analysis as a JSON array of competitor profiles with these fields:
-        - name: Company name
-        - description: Brief company description
-        - main_products: List of their main competing products
-        - target_market: Their primary target market
-        - key_differentiators: List of what makes them unique
-        
-        Return only verified competitors with clear product overlap.
+You are an intelligent system tasked with analyzing the competition for a specific product. Follow the instructions below to identify and evaluate the top competitors.
+
+**Input Variables:**
+- `{self.product_name}`: The name of your product.
+- `{self.product_description}`: A brief description of your product.
+
+**Instructions:**
+
+1. **Identify Competitors:**
+   - Based on the search results, identify companies that directly compete with `{self.product_name}`.
+   - Focus on companies that offer products or services similar to `{self.product_description}`.
+
+2. **Analyze Competitors:**
+   - For each identified competitor, gather the following information:
+     - **Name**: The official name of the company.
+     - **Description**: A brief overview of the company and its offerings.
+     - **Main Products**: A list of the competitor's main products that overlap with yours.
+     - **Target Market**: The primary audience or market segment the competitor is aiming for.
+     - **Key Differentiators**: Unique features or aspects that set the competitor apart from others.
+
+3. **Verification:**
+   - Ensure that each competitor listed has a clear and direct overlap with your product.
+   - Include only verified competitors with substantial evidence of competition.
+
+4. **Output Format:**
+   - Present the analysis as a JSON array of competitor profiles.
+   - Each competitor profile should include the following fields:
+     - `name`: *String* — Company name.
+     - `description`: *String* — Brief company description.
+     - `main_products`: *Array of Strings* — List of their main competing products.
+     - `target_market`: *String* — Their primary target market.
+     - `key_differentiators`: *Array of Strings* — List of what makes them unique.
+
         """
 
         competitors = await self.llm.agenerate(
@@ -200,19 +265,23 @@ class CompetitiveAnalyzer:
             competitors=competitors,
             derivatives=derivatives,
         )
-        
+
         # Store the report in Pinecone
         await self.pinecone.aupsert_documents(
             documents=[report.model_dump_json()],
-            metadata=[{
-                "type": "competitive_analysis",
-                "product_name": self.product_name,
-                "timestamp": datetime.now().isoformat()
-            }]
+            metadata=[
+                {
+                    "type": "competitive_analysis",
+                    "product_name": self.product_name,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            ],
         )
-        
-        logger.info(f"Successfully stored competitive analysis report for {self.product_name} in Pinecone")
-        
+
+        logger.info(
+            f"Successfully stored competitive analysis report for {self.product_name} in Pinecone"
+        )
+
         return report
 
 
