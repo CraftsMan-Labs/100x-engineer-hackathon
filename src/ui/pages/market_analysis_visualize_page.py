@@ -1,5 +1,5 @@
 import streamlit as st
-from database import save_report, get_user_reports
+from database import save_report, get_user_reports, get_user_products
 from api_code import market_analysis_visualise, img_b64_str_to_pil_image
 import json
 
@@ -22,13 +22,30 @@ def show_market_analysis_visualize_page():
             st.info("No previous market visualizations found.")
     
     st.subheader("New Market Visualization")
-    with st.form("market_visualization_form"):
-        domain = st.text_input("Domain")
-        offerings = st.text_area("Offerings")
+    
+    # Get available products
+    products = get_user_products(st.session_state.email)
+    
+    if not products:
+        st.warning("Please add your product details first!")
+        return
         
-        submitted = st.form_submit_button("Generate Visualization")
-        
-        if submitted and domain and offerings:
+    # Create product selection dropdown
+    product_options = {f"{p[1]} ({p[3]})": p for p in products}  # p[1] is name, p[3] is domain
+    selected_product_name = st.selectbox(
+        "Select Product for Analysis",
+        options=list(product_options.keys()),
+        help="Choose which product to analyze"
+    )
+    
+    # Get selected product details
+    selected_product = product_options[selected_product_name]
+    domain = selected_product[3]  # domain is at index 3
+    offerings = selected_product[4]  # offerings is at index 4
+    
+    st.info(f"Selected product details:\nDomain: {domain}\nOfferings: {offerings}")
+    
+    if st.button("Generate Visualization"):
             with st.spinner("Generating visualization..."):
                 try:
                     response = market_analysis_visualise(offerings, domain)
