@@ -69,10 +69,18 @@ def show_market_analysis_page():
     
     # Get selected product details
     selected_product = product_options[selected_product_name]
+    product_name = selected_product[1]  # name is at index 1
+    product_description = selected_product[2]  # description is at index 2
     domain = selected_product[3]  # domain is at index 3
     offerings = selected_product[4]  # offerings is at index 4
     
-    st.info(f"Selected product details:\nDomain: {domain}\nOfferings: {offerings}")
+    st.info(
+        f"Selected product details:\n"
+        f"Name: {product_name}\n"
+        f"Description: {product_description}\n"
+        f"Domain: {domain}\n"
+        f"Offerings: {offerings}"
+    )
     
     if st.button("Generate Analysis"):
             with st.spinner("Analyzing market..."):
