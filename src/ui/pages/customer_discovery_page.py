@@ -1,5 +1,5 @@
 import streamlit as st
-from database import save_report, get_user_reports
+from database import save_report, get_user_reports, get_user_products
 from api_code import customer_discovery
 import json
 
@@ -85,6 +85,3 @@ def show_customer_discovery_page():
                     
                 except Exception as e:
                     st.error(f"An error occurred: {str(e)}")
-            
-        elif submitted:
-            st.warning("Please fill in all fields")
