@@ -1,5 +1,5 @@
 import streamlit as st
-from database import save_report, get_user_reports
+from database import save_report, get_user_reports, get_user_products
 from api_code import market_analysis, img_b64_str_to_pil_image
 import json
 
