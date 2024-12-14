@@ -9,12 +9,14 @@ product_description = "GenAI edutech"
 domain = "Edutech and GenAI"
 offerings = "education placements upskilling in GenAI and image disccuioon models"
 
+
 def chat(messages: list[dict]):
     url = "http://localhost:8000/chat/"
     payload = {"messages": messages}
     headers = {"accept": "application/json", "Content-Type": "application/json"}
     response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
     return response.text
+
 
 def competition_analyse(product_name, product_description):
     url = "http://localhost:8000/competitive-intelligence/analyze"
@@ -303,6 +305,74 @@ def img_b64_str_to_pil_image(img_b64_str):
     image_data = base64.b64decode(img_b64_str)
     image = Image.open(io.BytesIO(image_data))
     return image
+
+
+def chat_pro_mode(messages: list[dict]):
+    url = "http://localhost:8000/chat/god_mode"
+    """
+    SAMPLE INPUT
+
+    {
+  "messages": [
+    {
+      "role": "user",
+      "content": "Can you project the overall user base for Bonsen AI in USA and UK and extraplate possible customer base accouting for wars as well and climate change"
+    },
+    {
+      "role": "assistant",
+      "content": "To project the overall user base for Bonsen AI in the USA and UK and account for factors like wars and climate change, we need to consider multiple variables including current market trends, potential impacts of geopolitical events, and environmental changes. Here's a structured approach:\n\n### Current User Base Estimation\n1. **Market Analysis**: \n   - **USA**: The AI market in the USA is large and diverse, with a strong emphasis on automation, data analytics, and cybersecurity. Bonsen AI can target sectors such as finance, healthcare, and manufacturing.\n   - **UK**: The UK market also shows strong demand for AI in similar sectors, with additional focus on AI for regulatory compliance and fintech solutions.\n\n2. **Current User Base**: Estimate the current user base by analyzing Bonsen AI's customer acquisition rate, market penetration, and existing contracts or partnerships.\n\n### Future Projections\n1. **Market Growth Rate**:\n   - Assume a conservative growth rate based on historical data and industry projections. For AI services, a CAGR (Compound Annual Growth Rate) of around 20-30% might be realistic given the rapid adoption of AI technologies.\n\n2. **Geopolitical Factors**:\n   - **Wars**: Conflicts can disrupt markets but also increase demand for specific AI applications like cybersecurity or supply chain management. For instance, tensions could lead to higher investments in defense-related AI applications.\n   - **Climate Change**: This could drive demand for AI in environmental monitoring, disaster response, and sustainable resource management. It might open new sectors for AI applications, increasing the potential user base.\n\n3. **Extrapolation Method**:\n   - Use the current user base and apply the estimated growth rate while adjusting for geopolitical and environmental impacts. For instance, if Bonsen AI currently has 1,000 users in the USA and 500 in the UK, and you expect a 25% growth rate with an additional 10% increase due to climate-related demand:\n     - **USA**: 1,000 * (1 + 0.25 + 0.10) = 1,350 users projected for the next year.\n     - **UK**: 500 * (1 + 0.25 + 0.10) = 675 users projected for the next year.\n\n### Strategic Considerations\n- **Diversification**: Bonsen AI should consider diversifying its offerings to include AI solutions for climate resilience and geopolitical stability.\n- **Partnerships**: Form strategic partnerships with organizations in sectors likely to be affected by these factors.\n\n### Conclusion\nBy considering historical growth rates, market trends, and external factors like geopolitical events and climate change, Bonsen AI can strategically plan for an increased user base in both the USA and UK, potentially reaching 1,350 users in the USA and 675 in the UK over the next year."
+    },
+    {
+      "role": "user",
+      "content": "Can you plot the in a gepah strucure assuming I had 120 cusstomers and got 30 new customers last month using out AI prodict accleartor product over the next 3 years in USA and UK and all the BRICS nations . Show potential customer base from all these different nations"
+    }
+  ]
+}
+
+
+    """
+    payload = {"messages": messages}
+    headers = {"accept": "application/json", "Content-Type": "application/json"}
+    response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+    """
+    SAMPLE OUTPUT:
+    {
+  "response": "To visualize the projected customer base growth for Bonsen AI in the USA, UK, and BRICS nations over the next three years, we'll plot the growth assuming a steady monthly acquisition rate and compounding growth. We'll assume the following:\n\n1. **Initial Customer Base**: 120 customers\n2. **Monthly New Customers**: 30 new customers\n3. **Growth Rate**: We'll assume a conservative growth rate of 15% per annum for simplicity.\n\n**BRICS Nations**: Brazil, Russia, India, China, South Africa.\n\nLet's plot the potential growth for each region.",
+  "img_bool": true,
+  "x_labels": [
+    "Year 1",
+    "Year 2",
+    "Year 3"
+  ],
+  "y_labels": [
+    "USA",
+    "UK",
+    "Brazil",
+    "Russia",
+    "India",
+    "China",
+    "South Africa"
+  ],
+  "x_values": [
+    1,
+    2,
+    3
+  ],
+  "y_values": [
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+  ],
+  "title": "Projected Customer Base Growth for Bonsen AI",
+  "x_axis_name": "Year",
+  "y_axis_name": "Customer Count"
+}
+    """
+    return response.text
 
 
 # competition_analyse_response = competition_analyse(product_name, product_description)
