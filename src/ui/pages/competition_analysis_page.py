@@ -43,28 +43,26 @@ def show_competition_analysis_page():
     st.info(f"Selected product details:\nName: {product_name}\nDescription: {product_description}")
     
     if st.button("Analyze Competition"):
-        
-        try:
-            with st.spinner("Analyzing competition..."):
-                try:
-                    response = competition_analyse(product_name, product_description)
-                    response_data = json.loads(response)
-                    
-                    # Display results
-                    st.subheader("Competition Analysis Results")
-                    st.json(response_data)
-                    
-                    # Save report
-                    save_report(
-                        st.session_state.email,
-                        "competition_analysis",
-                        response,
-                        product_name
-                    )
-                    
-                    st.success("Analysis complete and saved!")
-                    
-                except Exception as e:
-                    st.error(f"An error occurred: {str(e)}")
-        else:
-            st.info("Click 'Analyze Competition' to start the analysis")
+        with st.spinner("Analyzing competition..."):
+            try:
+                response = competition_analyse(product_name, product_description)
+                response_data = json.loads(response)
+                
+                # Display results
+                st.subheader("Competition Analysis Results")
+                st.json(response_data)
+                
+                # Save report
+                save_report(
+                    st.session_state.email,
+                    "competition_analysis",
+                    response,
+                    product_name
+                )
+                
+                st.success("Analysis complete and saved!")
+                
+            except Exception as e:
+                st.error(f"An error occurred: {str(e)}")
+    else:
+        st.info("Click 'Analyze Competition' to start the analysis")
