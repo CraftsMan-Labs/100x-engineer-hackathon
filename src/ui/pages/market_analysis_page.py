@@ -19,13 +19,22 @@ def show_market_analysis_page():
             st.info("No previous market analysis reports found.")
     
     st.subheader("New Market Analysis")
-    with st.form("market_analysis_form"):
-        domain = st.text_input("Domain")
-        offerings = st.text_area("Offerings")
+    
+    # Get product details
+    product_reports = get_user_reports(st.session_state.email, "product_details")
+    
+    if not product_reports:
+        st.warning("Please add your product details first!")
+        return
         
-        submitted = st.form_submit_button("Generate Analysis")
-        
-        if submitted and domain and offerings:
+    # Get latest product details
+    latest_product = product_reports[0]
+    domain = latest_product[3]  # domain is at index 3
+    offerings = latest_product[4]  # offerings is at index 4
+    
+    st.info(f"Using product details:\nDomain: {domain}\nOfferings: {offerings}")
+    
+    if st.button("Generate Analysis"):
             with st.spinner("Analyzing market..."):
                 try:
                     response = market_analysis(offerings, domain)
