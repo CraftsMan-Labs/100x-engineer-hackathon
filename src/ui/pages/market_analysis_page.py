@@ -45,7 +45,8 @@ def show_market_analysis_page():
         if market_reports:
             report = market_reports[0]  # Get most recent report
             st.subheader(f"{report[2]} ({report[3]})")
-            st.json(json.loads(report[1]))
+            # st.json(json.loads(report[1]))
+            st.markdown(json_to_markdown(json.loads(report[1])))
         else:
             st.info("No previous market analysis reports found.")
     
