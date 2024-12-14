@@ -18,12 +18,31 @@ def show_customer_discovery_page():
         else:
             st.info("No previous customer discovery reports found.")
     
+    # Get available products
+    products = get_user_products(st.session_state.email)
+    
+    if not products:
+        st.warning("Please add your product details first!")
+        return
+        
     st.subheader("New Customer Discovery")
-    with st.form("customer_discovery_form"):
-        product_name = st.text_input("Product Name")
-        product_description = st.text_area("Product Description")
-        domain = st.text_input("Domain")
-        offerings = st.text_area("Offerings")
+    
+    # Create product selection dropdown
+    product_options = {f"{p[1]} ({p[3]})": p for p in products}  # p[1] is name, p[3] is domain
+    selected_product_name = st.selectbox(
+        "Select Product for Analysis",
+        options=list(product_options.keys()),
+        help="Choose which product to analyze"
+    )
+    
+    # Get selected product details
+    selected_product = product_options[selected_product_name]
+    product_name = selected_product[1]  # name is at index 1
+    product_description = selected_product[2]  # description is at index 2
+    domain = selected_product[3]  # domain is at index 3
+    offerings = selected_product[4]  # offerings is at index 4
+    
+    st.info(f"Selected product details:\nName: {product_name}\nDescription: {product_description}\nDomain: {domain}\nOfferings: {offerings}")
         
         submitted = st.form_submit_button("Discover Customer Segments")
         
