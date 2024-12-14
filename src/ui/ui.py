@@ -60,12 +60,15 @@ def main_app():
         # Sidebar navigation
         page = st.sidebar.radio(
             "Navigation", 
-            ["Market Analysis", "Competition Analysis", "Customer Discovery", 
+            ["Product Details", "Market Analysis", "Competition Analysis", "Customer Discovery", 
              "Market Visualization", "Market Expansion", "Product Evolution",
              "Chat", "View Reports"]
         )
 
-        if page == "Market Analysis":
+        if page == "Product Details":
+            from pages.customer_product_page import show_customer_product_page
+            show_customer_product_page()
+        elif page == "Market Analysis":
             from pages.market_analysis_page import show_market_analysis_page
             show_market_analysis_page()
         elif page == "Competition Analysis":
