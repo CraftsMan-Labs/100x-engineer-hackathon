@@ -67,7 +67,20 @@ def json_to_markdown(data: dict) -> str:
 def show_product_evolution_page():
     st.header("Product Evolution Analysis")
     
-    # Get user's existing reports
+    # Show latest report in an expander
+    reports = get_user_reports(st.session_state.email)
+    evolution_reports = [r for r in reports if r[0] == "product_evolution"]
+    
+    if evolution_reports:
+        with st.expander("View Latest Product Evolution Report", expanded=True):
+            latest_report = evolution_reports[0]  # Get most recent report
+            st.subheader(f"{latest_report[2]} ({latest_report[3]})")
+            markdown_content = json_to_markdown(json.loads(latest_report[1]))
+            st.markdown(markdown_content)
+    
+    st.subheader("New Product Evolution Analysis")
+    
+    # Get user's existing reports for analysis
     reports = get_user_reports(st.session_state.email)
     market_reports = [r for r in reports if r[0] == "market_analysis"]
     customer_reports = [r for r in reports if r[0] == "customer_discovery"]

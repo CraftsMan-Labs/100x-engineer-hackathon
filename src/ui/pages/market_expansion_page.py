@@ -6,7 +6,19 @@ import json
 def show_market_expansion_page():
     st.header("Market Expansion Analysis")
     
-    # Get user's existing reports
+    # Show latest report in an expander
+    reports = get_user_reports(st.session_state.email)
+    expansion_reports = [r for r in reports if r[0] == "market_expansion"]
+    
+    if expansion_reports:
+        with st.expander("View Latest Market Expansion Report", expanded=True):
+            latest_report = expansion_reports[0]  # Get most recent report
+            st.subheader(f"{latest_report[2]} ({latest_report[3]})")
+            st.json(json.loads(latest_report[1]))
+    
+    st.subheader("New Market Expansion Analysis")
+    
+    # Get user's existing reports for analysis
     reports = get_user_reports(st.session_state.email)
     market_reports = [r for r in reports if r[0] == "market_analysis"]
     customer_reports = [r for r in reports if r[0] == "customer_discovery"]
