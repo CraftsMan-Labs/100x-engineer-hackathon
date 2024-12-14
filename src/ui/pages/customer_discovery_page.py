@@ -43,10 +43,9 @@ def show_customer_discovery_page():
     offerings = selected_product[4]  # offerings is at index 4
     
     st.info(f"Selected product details:\nName: {product_name}\nDescription: {product_description}\nDomain: {domain}\nOfferings: {offerings}")
-        
-        submitted = st.form_submit_button("Discover Customer Segments")
-        
-        if submitted and all([product_name, product_description, domain, offerings]):
+    
+    if st.button("Discover Customer Segments"):
+        if all([product_name, product_description, domain, offerings]):
             with st.spinner("Analyzing customer segments..."):
                 try:
                     response = customer_discovery(
