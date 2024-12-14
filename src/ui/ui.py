@@ -1,18 +1,7 @@
 import streamlit as st
 from auth import signup, login
-from database import init_db, save_report, get_user_reports
+from database import init_db, get_user_reports
 import json
-from api_code import (
-    market_analysis,
-    competition_analyse,
-    customer_discovery,
-    market_analysis_visualise,
-    chat,
-    market_expansion,
-    product_evolution,
-    img_b64_str_to_pil_image,
-)
-
 
 def init_session_state():
     if "authenticated" not in st.session_state:
