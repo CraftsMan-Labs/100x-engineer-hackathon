@@ -12,12 +12,12 @@ def show_market_analysis_visualize_page():
         visual_reports = [r for r in reports if r[0] == "market_visualization"]
         
         if visual_reports:
-            for report_type, report_data, product_name, created_at in visual_reports:
-                st.subheader(f"{product_name} ({created_at})")
-                report_json = json.loads(report_data)
-                if "img" in report_json:
-                    st.image(img_b64_str_to_pil_image(report_json["img"]))
-                st.json(report_json)
+            report = visual_reports[0]  # Get most recent report
+            st.subheader(f"{report[2]} ({report[3]})")
+            report_json = json.loads(report[1])
+            if "img" in report_json:
+                st.image(img_b64_str_to_pil_image(report_json["img"]))
+            st.json(report_json)
         else:
             st.info("No previous market visualizations found.")
     

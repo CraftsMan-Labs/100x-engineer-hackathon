@@ -12,9 +12,9 @@ def show_market_analysis_page():
         market_reports = [r for r in reports if r[0] == "market_analysis"]
         
         if market_reports:
-            for report_type, report_data, product_name, created_at in market_reports:
-                st.subheader(f"{product_name} ({created_at})")
-                st.json(json.loads(report_data))
+            report = market_reports[0]  # Get most recent report
+            st.subheader(f"{report[2]} ({report[3]})")
+            st.json(json.loads(report[1]))
         else:
             st.info("No previous market analysis reports found.")
     
