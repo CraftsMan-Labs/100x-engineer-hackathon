@@ -52,8 +52,48 @@ def show_market_expansion_page():
                 response_data = json.loads(response)
                 
                 # Display results
-                st.subheader("Expansion Analysis Results")
-                st.json(response_data)
+                st.subheader("Market Expansion Analysis Results")
+                
+                # Display primary domain
+                if "primary_domain" in response_data:
+                    st.write("**Primary Domain:**")
+                    st.write(response_data["primary_domain"])
+                
+                # Display expansion domains
+                if "expansion_domains" in response_data:
+                    st.write("**Expansion Domains:**")
+                    for domain in response_data["expansion_domains"]:
+                        st.markdown(domain)
+                
+                # Display strategic rationale
+                if "strategic_rationale" in response_data:
+                    st.write("**Strategic Rationale:**")
+                    for key, value in response_data["strategic_rationale"].items():
+                        st.markdown(value)
+                
+                # Display competitive landscape
+                if "competitive_landscape" in response_data:
+                    st.write("**Competitive Analysis:**")
+                    for key, value in response_data["competitive_landscape"].items():
+                        st.markdown(value)
+                
+                # Display investment requirements
+                if "investment_requirements" in response_data:
+                    st.write("**Investment Requirements:**")
+                    for key, value in response_data["investment_requirements"].items():
+                        st.write(f"- {key}: ${value:,}")
+                
+                # Display risk assessment
+                if "risk_assessment" in response_data:
+                    st.write("**Risk Assessment:**")
+                    for key, value in response_data["risk_assessment"].items():
+                        st.write(f"- {key}: {value:.2f}")
+                
+                # Display potential synergies
+                if "potential_synergies" in response_data:
+                    st.write("**Potential Synergies:**")
+                    for synergy in response_data["potential_synergies"]:
+                        st.markdown(f"- {synergy}")
                 
                 # Save report
                 save_report(
