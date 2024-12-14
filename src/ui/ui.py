@@ -66,28 +66,28 @@ def main_app():
         )
 
         if page == "Market Analysis":
-        from pages.market_analysis_page import show_market_analysis_page
-        show_market_analysis_page()
-    elif page == "Competition Analysis":
-        from pages.competition_analysis_page import show_competition_analysis_page
-        show_competition_analysis_page()
-    elif page == "Customer Discovery":
-        from pages.customer_discovery_page import show_customer_discovery_page
-        show_customer_discovery_page()
-    elif page == "Market Visualization":
-        from pages.market_analysis_visualize_page import show_market_analysis_visualize_page
-        show_market_analysis_visualize_page()
-    elif page == "Market Expansion":
-        from pages.market_expansion_page import show_market_expansion_page
-        show_market_expansion_page()
-    elif page == "Product Evolution":
-        from pages.product_evolution_page import show_product_evolution_page
-        show_product_evolution_page()
-    elif page == "Chat":
-        from pages.chat_page import show_chat_page
-        show_chat_page()
-    else:
-        show_reports_page()
+            from pages.market_analysis_page import show_market_analysis_page
+            show_market_analysis_page()
+        elif page == "Competition Analysis":
+            from pages.competition_analysis_page import show_competition_analysis_page
+            show_competition_analysis_page()
+        elif page == "Customer Discovery":
+            from pages.customer_discovery_page import show_customer_discovery_page
+            show_customer_discovery_page()
+        elif page == "Market Visualization":
+            from pages.market_analysis_visualize_page import show_market_analysis_visualize_page
+            show_market_analysis_visualize_page()
+        elif page == "Market Expansion":
+            from pages.market_expansion_page import show_market_expansion_page
+            show_market_expansion_page()
+        elif page == "Product Evolution":
+            from pages.product_evolution_page import show_product_evolution_page
+            show_product_evolution_page()
+        elif page == "Chat":
+            from pages.chat_page import show_chat_page
+            show_chat_page()
+        else:
+            show_reports_page()
 
 
 def show_reports_page():
