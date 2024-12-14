@@ -29,12 +29,12 @@ def show_god_chat_page():
         with st.chat_message("assistant"):
             with st.spinner("Analyzing..."):
                 response_data = json.loads(chat_pro_mode(st.session_state.god_messages))
-                
+                print(response_data)
                 # Display text response
                 st.markdown(response_data['response'])
                 
                 # Handle visualization if present
-                if response_data.get('img_bool'):
+                if response_data.get('graph_bool'):
                     fig, ax = plt.subplots(figsize=(10, 6))
                     
                     # Get data from response

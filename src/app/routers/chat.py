@@ -34,7 +34,7 @@ class RAGCheckGodMode(BaseModel):
 
 class ResponseChat(BaseModel):
     response: str
-    img_bool: bool = Field(
+    graph: bool = Field(
         description="If you need to plot some graphs set true or else False"
     )
     x_labels: Optional[list[str]]

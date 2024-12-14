@@ -338,7 +338,7 @@ def chat_pro_mode(messages: list[dict]):
     SAMPLE OUTPUT:
     {
   "response": "To visualize the projected customer base growth for Bonsen AI in the USA, UK, and BRICS nations over the next three years, we'll plot the growth assuming a steady monthly acquisition rate and compounding growth. We'll assume the following:\n\n1. **Initial Customer Base**: 120 customers\n2. **Monthly New Customers**: 30 new customers\n3. **Growth Rate**: We'll assume a conservative growth rate of 15% per annum for simplicity.\n\n**BRICS Nations**: Brazil, Russia, India, China, South Africa.\n\nLet's plot the potential growth for each region.",
-  "img_bool": true,
+  "graph": true,
   "x_labels": [
     "Year 1",
     "Year 2",
