@@ -67,6 +67,28 @@ def show_market_expansion_page():
     
     st.subheader("New Market Expansion Analysis")
     
+    # Get available products
+    products = get_user_products(st.session_state.email)
+    
+    if not products:
+        st.warning("Please add your product details first!")
+        return
+        
+    # Create product selection dropdown
+    product_options = {f"{p[1]} ({p[3]})": p for p in products}  # p[1] is name, p[3] is domain
+    selected_product_name = st.selectbox(
+        "Select Product for Analysis",
+        options=list(product_options.keys()),
+        help="Choose which product to analyze"
+    )
+    
+    # Get selected product details
+    selected_product = product_options[selected_product_name]
+    product_name = selected_product[1]  # name is at index 1
+    domain = selected_product[3]  # domain is at index 3
+    
+    st.info(f"Selected product details:\nName: {product_name}\nDomain: {domain}")
+    
     # Get user's existing reports for analysis
     reports = get_user_reports(st.session_state.email)
     market_reports = [r for r in reports if r[0] == "market_analysis"]
@@ -89,9 +111,7 @@ def show_market_expansion_page():
         format_func=lambda x: x[0]
     )
     
-    domain = st.text_input("Target Domain for Expansion")
-    
-    if st.button("Analyze Expansion Opportunities") and domain:
+    if st.button("Analyze Expansion Opportunities"):
         with st.spinner("Analyzing expansion opportunities..."):
             try:
                 market_report = json.loads(selected_market[1])
@@ -108,7 +128,7 @@ def show_market_expansion_page():
                     st.session_state.email,
                     "market_expansion",
                     response,
-                    f"Market Expansion - {domain}"
+                    f"Market Expansion - {product_name}"
                 )
                 
                 st.success("Analysis complete and saved!")
