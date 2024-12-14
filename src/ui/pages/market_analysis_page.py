@@ -3,6 +3,37 @@ from database import save_report, get_user_reports
 from api_code import market_analysis, img_b64_str_to_pil_image
 import json
 
+def json_to_markdown(data: dict) -> str:
+    """Convert market analysis JSON response to readable markdown"""
+    markdown = []
+    
+    # Original Query
+    if "original_query" in data:
+        markdown.append(f"## Original Query\n{data['original_query']}")
+    
+    # Problem Breakdown
+    if "problem_breakdown" in data and "questions" in data["problem_breakdown"]:
+        markdown.append("\n## Problem Breakdown")
+        for question in data["problem_breakdown"]["questions"]:
+            markdown.append(f"- {question}")
+    
+    # Search Results
+    if "search_results" in data:
+        markdown.append("\n## Search Results")
+        for query, results in data["search_results"].items():
+            markdown.append(f"\n### Query: {query}")
+            if "yearly_insights" in results:
+                for insight in results["yearly_insights"]:
+                    markdown.append(f"\n#### Year {insight['year']}")
+                    markdown.append(insight["analysis"])
+    
+    # Comprehensive Report
+    if "comprehensive_report" in data:
+        markdown.append("\n## Comprehensive Report")
+        markdown.append(data["comprehensive_report"])
+    
+    return "\n".join(markdown)
+
 def show_market_analysis_page():
     st.header("Market Analysis")
     
@@ -40,9 +71,9 @@ def show_market_analysis_page():
                     response = market_analysis(offerings, domain)
                     response_data = json.loads(response)
                     
-                    # Display results
+                    # Display results using markdown
                     st.subheader("Analysis Results")
-                    st.json(response_data)
+                    st.markdown(json_to_markdown(response_data))
                     
                     # Save report
                     save_report(
