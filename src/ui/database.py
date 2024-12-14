@@ -136,6 +136,24 @@ def get_product_by_id(product_id: int) -> tuple:
     finally:
         conn.close()
 
+def update_product(product_id: int, product_name: str, product_description: str, domain: str, offerings: str) -> bool:
+    try:
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+        c.execute(
+            '''UPDATE products 
+               SET product_name = ?, product_description = ?, domain = ?, offerings = ?
+               WHERE id = ?''',
+            (product_name, product_description, domain, offerings, product_id)
+        )
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error updating product: {e}")
+        return False
+    finally:
+        conn.close()
+
 def get_user_reports(email: str, report_type: str = None) -> list:
     try:
         conn = sqlite3.connect('users.db')
