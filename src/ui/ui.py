@@ -101,8 +101,12 @@ def show_reports_page():
         st.info("No reports found. Start a new analysis to generate reports!")
         return
 
-    for report_type, report_data, product_name, created_at in reports:
+    for report_type, report_data, product_name, domain, offerings, created_at in reports:
         with st.expander(f"{product_name} - {report_type} ({created_at})"):
+            # Display basic info
+            st.write(f"**Domain:** {domain if domain else 'N/A'}")
+            st.write(f"**Offerings:** {offerings if offerings else 'N/A'}")
+            # Display report data
             st.json(json.loads(report_data))
 
 
