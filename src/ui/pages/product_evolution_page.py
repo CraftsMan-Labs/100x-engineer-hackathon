@@ -25,6 +25,16 @@ def json_to_markdown(data: dict) -> str:
                     markdown.append("\nKey Characteristics:")
                     for char in niche["key_characteristics"]:
                         markdown.append(f"- {char}")
+        
+        if "ideal_customer_profile" in cr:
+            markdown.append("\n### Ideal Customer Profile")
+            for key, value in cr["ideal_customer_profile"].items():
+                markdown.append(f"- **{key}:** {value}")
+        
+        if "investor_sentiment" in cr:
+            markdown.append("\n### Investor Sentiment")
+            for key, value in cr["investor_sentiment"].items():
+                markdown.append(f"- **{key}:** {value}")
     
     # Market Report Section
     if "market_report" in data:
@@ -34,6 +44,14 @@ def json_to_markdown(data: dict) -> str:
             markdown.append("\n### Key Questions")
             for q in mr["problem_breakdown"]["questions"]:
                 markdown.append(f"- {q}")
+        
+        if "search_results" in mr:
+            markdown.append("\n### Market Research Results")
+            for category, results in mr["search_results"].items():
+                markdown.append(f"\n#### {category}")
+                for key, value in results.items():
+                    markdown.append(f"- **{key}:** {value}")
+        
         if "comprehensive_report" in mr:
             markdown.append("\n### Comprehensive Analysis")
             markdown.append(mr["comprehensive_report"])
@@ -42,6 +60,9 @@ def json_to_markdown(data: dict) -> str:
     if "market_expansion" in data:
         markdown.append("\n## Market Expansion Strategy")
         me = data["market_expansion"]
+        
+        markdown.append(f"\n**Primary Domain:** {me.get('primary_domain', 'N/A')}")
+        
         if "expansion_domains" in me:
             markdown.append("\n### Target Expansion Domains")
             for domain in me["expansion_domains"]:
@@ -52,15 +73,25 @@ def json_to_markdown(data: dict) -> str:
             for key, value in me["strategic_rationale"].items():
                 markdown.append(f"- **{key}:** {value}")
         
-        if "potential_synergies" in me:
-            markdown.append("\n### Potential Synergies")
-            for synergy in me["potential_synergies"]:
-                markdown.append(f"- {synergy}")
+        if "competitive_landscape" in me:
+            markdown.append("\n### Competitive Landscape")
+            for key, value in me["competitive_landscape"].items():
+                markdown.append(f"- **{key}:** {value}")
+        
+        if "investment_requirements" in me:
+            markdown.append("\n### Investment Requirements")
+            for category, amount in me["investment_requirements"].items():
+                markdown.append(f"- **{category}:** ${amount:,.2f}")
         
         if "risk_assessment" in me:
             markdown.append("\n### Risk Assessment")
             for risk, score in me["risk_assessment"].items():
                 markdown.append(f"- **{risk}:** {score}")
+        
+        if "potential_synergies" in me:
+            markdown.append("\n### Potential Synergies")
+            for synergy in me["potential_synergies"]:
+                markdown.append(f"- {synergy}")
     
     return "\n".join(markdown)
 
