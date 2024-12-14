@@ -1,11 +1,24 @@
 import streamlit as st
-from database import save_report
+from database import save_report, get_user_reports
 from api_code import market_analysis, img_b64_str_to_pil_image
 import json
 
 def show_market_analysis_page():
     st.header("Market Analysis")
     
+    # Show existing reports in an expander
+    with st.expander("View Previous Market Analysis Reports"):
+        reports = get_user_reports(st.session_state.email)
+        market_reports = [r for r in reports if r[0] == "market_analysis"]
+        
+        if market_reports:
+            for report_type, report_data, product_name, created_at in market_reports:
+                st.subheader(f"{product_name} ({created_at})")
+                st.json(json.loads(report_data))
+        else:
+            st.info("No previous market analysis reports found.")
+    
+    st.subheader("New Market Analysis")
     with st.form("market_analysis_form"):
         domain = st.text_input("Domain")
         offerings = st.text_area("Offerings")
