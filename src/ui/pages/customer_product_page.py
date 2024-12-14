@@ -5,7 +5,7 @@ from database import save_product, get_user_products
 def show_customer_product_page():
     st.header("Product Details Management")
     
-    st.subheader("Your Products")
+    st.subheader("Your Current Products")
     
     # Get existing products
     products = get_user_products(st.session_state.email)
@@ -16,7 +16,17 @@ def show_customer_product_page():
             products,
             columns=['ID', 'Product Name', 'Description', 'Domain', 'Offerings', 'Created At']
         )
-        st.dataframe(product_df, hide_index=True)
+        
+        # Display each product in an expander for better readability
+        for _, row in product_df.iterrows():
+            with st.expander(f"📦 {row['Product Name']} ({row['Created At']})"):
+                st.write("**Product Description:**")
+                st.write(row['Description'])
+                st.write("**Domain:**", row['Domain'])
+                st.write("**Offerings:**", row['Offerings'])
+                st.divider()
+    else:
+        st.info("No products added yet. Use the form below to add your first product!")
     
     st.subheader("Add New Product")
     with st.form("product_details_form"):
