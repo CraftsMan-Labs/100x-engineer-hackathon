@@ -6,12 +6,17 @@ def show_customer_product_page():
     st.header("Product Details Management")
     
     # Get existing product details if any
-    reports = get_user_reports(st.session_state.email)
-    product_reports = [r for r in reports if r[0] == "product_details"]
+    product_reports = get_user_reports(st.session_state.email, "product_details")
     
     current_details = {}
     if product_reports:
-        current_details = json.loads(product_reports[0][1])
+        report = product_reports[0]  # Most recent report
+        current_details = {
+            "product_name": report[2],
+            "product_description": json.loads(report[1]).get("product_description", ""),
+            "domain": report[3],
+            "offerings": report[4]
+        }
     
     with st.form("product_details_form"):
         product_name = st.text_input(
@@ -52,7 +57,9 @@ def show_customer_product_page():
                 st.session_state.email,
                 "product_details",
                 json.dumps(product_data),
-                product_name
+                product_name,
+                domain,
+                offerings
             )
             
             st.success("Product details saved successfully!")

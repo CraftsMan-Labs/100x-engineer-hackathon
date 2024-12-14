@@ -24,6 +24,8 @@ def init_db():
             report_type TEXT NOT NULL,
             report_data TEXT NOT NULL,
             product_name TEXT,
+            domain TEXT,
+            offerings TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_email) REFERENCES users(email)
         )
@@ -55,13 +57,15 @@ def verify_user(email: str, password: str) -> bool:
         return True
     return False
 
-def save_report(email: str, report_type: str, report_data: str, product_name: str) -> bool:
+def save_report(email: str, report_type: str, report_data: str, product_name: str, domain: str = None, offerings: str = None) -> bool:
     try:
         conn = sqlite3.connect('users.db')
         c = conn.cursor()
         c.execute(
-            'INSERT INTO reports (user_email, report_type, report_data, product_name) VALUES (?, ?, ?, ?)',
-            (email, report_type, report_data, product_name)
+            '''INSERT INTO reports 
+               (user_email, report_type, report_data, product_name, domain, offerings) 
+               VALUES (?, ?, ?, ?, ?, ?)''',
+            (email, report_type, report_data, product_name, domain, offerings)
         )
         conn.commit()
         return True
@@ -71,17 +75,26 @@ def save_report(email: str, report_type: str, report_data: str, product_name: st
     finally:
         conn.close()
 
-def get_user_reports(email: str) -> list:
+def get_user_reports(email: str, report_type: str = None) -> list:
     try:
         conn = sqlite3.connect('users.db')
         c = conn.cursor()
-        c.execute(
-            '''SELECT report_type, report_data, product_name, created_at 
-               FROM reports 
-               WHERE user_email = ? 
-               ORDER BY created_at DESC''',
-            (email,)
-        )
+        if report_type:
+            c.execute(
+                '''SELECT report_type, report_data, product_name, domain, offerings, created_at 
+                   FROM reports 
+                   WHERE user_email = ? AND report_type = ?
+                   ORDER BY created_at DESC''',
+                (email, report_type)
+            )
+        else:
+            c.execute(
+                '''SELECT report_type, report_data, product_name, domain, offerings, created_at 
+                   FROM reports 
+                   WHERE user_email = ? 
+                   ORDER BY created_at DESC''',
+                (email,)
+            )
         return c.fetchall()
     finally:
         conn.close()
