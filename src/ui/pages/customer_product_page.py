@@ -21,25 +21,22 @@ def show_customer_product_page():
     st.subheader("Add New Product")
     with st.form("product_details_form"):
         product_name = st.text_input(
-            "Product Name", 
-            value=current_details.get("product_name", "")
+            "Product Name",
+            help="Enter your product name"
         )
         
         product_description = st.text_area(
             "Product Description",
-            value=current_details.get("product_description", ""),
             help="Provide a detailed description of your product"
         )
         
         domain = st.text_input(
             "Domain",
-            value=current_details.get("domain", ""),
             help="e.g., Edutech, FinTech, HealthTech"
         )
         
         offerings = st.text_area(
             "Product Offerings",
-            value=current_details.get("offerings", ""),
             help="List the key features and services your product offers"
         )
         
