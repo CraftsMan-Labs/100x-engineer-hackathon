@@ -72,7 +72,8 @@ def json_to_markdown(data: dict) -> str:
     # Visuals Section
     if "visuals" in data and "img" in data["visuals"]:
         markdown.append("\n### Visualization")
-        markdown.append("\n*Growth Trend Visualization available in the report*")
+        img_base64 = data["visuals"]["img"]
+        markdown.append(f'\n![Growth Trend](data:image/png;base64,{img_base64})')
     
     return "\n".join(markdown)
 
