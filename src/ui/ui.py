@@ -62,7 +62,7 @@ def main_app():
             "Navigation", 
             ["Product Details", "Market Analysis", "Competition Analysis", "Customer Discovery", 
              "Market Visualization", "Market Expansion", "Product Evolution",
-             "Chat", "View Reports"]
+             "Chat", "God Mode Chat", "View Reports"]
         )
 
         if page == "Product Details":
@@ -89,6 +89,9 @@ def main_app():
         elif page == "Chat":
             from pages.chat_page import show_chat_page
             show_chat_page()
+        elif page == "God Mode Chat":
+            from pages.god_chat_page import show_god_chat_page
+            show_god_chat_page()
         else:
             show_reports_page()
 
