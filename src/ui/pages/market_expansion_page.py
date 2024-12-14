@@ -3,6 +3,54 @@ from database import save_report, get_user_reports
 from api_code import market_expansion
 import json
 
+def json_to_markdown(data: dict) -> str:
+    """Convert market expansion JSON response to readable markdown"""
+    markdown = []
+    
+    # Primary Domain
+    if "primary_domain" in data:
+        markdown.append(f"## Primary Domain\n{data['primary_domain']}")
+    
+    # Expansion Domains
+    if "expansion_domains" in data:
+        markdown.append("\n## Expansion Domains")
+        for domain in data["expansion_domains"]:
+            markdown.append(f"- {domain}")
+    
+    # Strategic Rationale
+    if "strategic_rationale" in data:
+        markdown.append("\n## Strategic Rationale")
+        for key, value in data["strategic_rationale"].items():
+            markdown.append(f"\n### {key.replace('_', ' ').title()}")
+            markdown.append(value)
+    
+    # Competitive Landscape
+    if "competitive_landscape" in data:
+        markdown.append("\n## Competitive Landscape")
+        for key, value in data["competitive_landscape"].items():
+            markdown.append(f"\n### {key.replace('_', ' ').title()}")
+            markdown.append(value)
+    
+    # Investment Requirements
+    if "investment_requirements" in data:
+        markdown.append("\n## Investment Requirements")
+        for key, value in data["investment_requirements"].items():
+            markdown.append(f"- **{key.replace('_', ' ').title()}**: ${value:,}")
+    
+    # Risk Assessment
+    if "risk_assessment" in data:
+        markdown.append("\n## Risk Assessment")
+        for key, value in data["risk_assessment"].items():
+            markdown.append(f"- **{key.replace('_', ' ').title()}**: {value:.2f}")
+    
+    # Potential Synergies
+    if "potential_synergies" in data:
+        markdown.append("\n## Potential Synergies")
+        for synergy in data["potential_synergies"]:
+            markdown.append(f"- {synergy}")
+    
+    return "\n".join(markdown)
+
 def show_market_expansion_page():
     st.header("Market Expansion Analysis")
     
@@ -14,7 +62,8 @@ def show_market_expansion_page():
         with st.expander("View Latest Market Expansion Report", expanded=True):
             latest_report = expansion_reports[0]  # Get most recent report
             st.subheader(f"{latest_report[2]} ({latest_report[3]})")
-            st.json(json.loads(latest_report[1]))
+            report_data = json.loads(latest_report[1])
+            st.markdown(json_to_markdown(report_data))
     
     st.subheader("New Market Expansion Analysis")
     
@@ -51,49 +100,8 @@ def show_market_expansion_page():
                 response = market_expansion(domain, market_report, customer_report)
                 response_data = json.loads(response)
                 
-                # Display results
-                st.subheader("Market Expansion Analysis Results")
-                
-                # Display primary domain
-                if "primary_domain" in response_data:
-                    st.write("**Primary Domain:**")
-                    st.write(response_data["primary_domain"])
-                
-                # Display expansion domains
-                if "expansion_domains" in response_data:
-                    st.write("**Expansion Domains:**")
-                    for domain in response_data["expansion_domains"]:
-                        st.markdown(domain)
-                
-                # Display strategic rationale
-                if "strategic_rationale" in response_data:
-                    st.write("**Strategic Rationale:**")
-                    for key, value in response_data["strategic_rationale"].items():
-                        st.markdown(value)
-                
-                # Display competitive landscape
-                if "competitive_landscape" in response_data:
-                    st.write("**Competitive Analysis:**")
-                    for key, value in response_data["competitive_landscape"].items():
-                        st.markdown(value)
-                
-                # Display investment requirements
-                if "investment_requirements" in response_data:
-                    st.write("**Investment Requirements:**")
-                    for key, value in response_data["investment_requirements"].items():
-                        st.write(f"- {key}: ${value:,}")
-                
-                # Display risk assessment
-                if "risk_assessment" in response_data:
-                    st.write("**Risk Assessment:**")
-                    for key, value in response_data["risk_assessment"].items():
-                        st.write(f"- {key}: {value:.2f}")
-                
-                # Display potential synergies
-                if "potential_synergies" in response_data:
-                    st.write("**Potential Synergies:**")
-                    for synergy in response_data["potential_synergies"]:
-                        st.markdown(f"- {synergy}")
+                # Display results using markdown
+                st.markdown(json_to_markdown(response_data))
                 
                 # Save report
                 save_report(
