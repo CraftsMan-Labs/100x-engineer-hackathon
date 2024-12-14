@@ -52,19 +52,27 @@ def show_market_analysis_page():
     
     st.subheader("New Market Analysis")
     
-    # Get product details
-    product_reports = get_user_reports(st.session_state.email, "product_details")
+    # Get available products
+    products = get_user_products(st.session_state.email)
     
-    if not product_reports:
+    if not products:
         st.warning("Please add your product details first!")
         return
         
-    # Get latest product details
-    latest_product = product_reports[0]
-    domain = latest_product[3]  # domain is at index 3
-    offerings = latest_product[4]  # offerings is at index 4
+    # Create product selection dropdown
+    product_options = {f"{p[1]} ({p[3]})": p for p in products}  # p[1] is name, p[3] is domain
+    selected_product_name = st.selectbox(
+        "Select Product for Analysis",
+        options=list(product_options.keys()),
+        help="Choose which product to analyze"
+    )
     
-    st.info(f"Using product details:\nDomain: {domain}\nOfferings: {offerings}")
+    # Get selected product details
+    selected_product = product_options[selected_product_name]
+    domain = selected_product[3]  # domain is at index 3
+    offerings = selected_product[4]  # offerings is at index 4
+    
+    st.info(f"Selected product details:\nDomain: {domain}\nOfferings: {offerings}")
     
     if st.button("Generate Analysis"):
             with st.spinner("Analyzing market..."):
