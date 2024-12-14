@@ -16,6 +16,20 @@ def init_db():
         )
     ''')
     
+    # Create products table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS products (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_email TEXT NOT NULL,
+            product_name TEXT NOT NULL,
+            product_description TEXT,
+            domain TEXT,
+            offerings TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_email) REFERENCES users(email)
+        )
+    ''')
+    
     # Create reports table
     c.execute('''
         CREATE TABLE IF NOT EXISTS reports (
@@ -72,6 +86,53 @@ def save_report(email: str, report_type: str, report_data: str, product_name: st
     except Exception as e:
         print(f"Error saving report: {e}")
         return False
+    finally:
+        conn.close()
+
+def save_product(email: str, product_name: str, product_description: str, domain: str, offerings: str) -> bool:
+    try:
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+        c.execute(
+            '''INSERT INTO products 
+               (user_email, product_name, product_description, domain, offerings) 
+               VALUES (?, ?, ?, ?, ?)''',
+            (email, product_name, product_description, domain, offerings)
+        )
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error saving product: {e}")
+        return False
+    finally:
+        conn.close()
+
+def get_user_products(email: str) -> list:
+    try:
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+        c.execute(
+            '''SELECT id, product_name, product_description, domain, offerings, created_at 
+               FROM products 
+               WHERE user_email = ? 
+               ORDER BY created_at DESC''',
+            (email,)
+        )
+        return c.fetchall()
+    finally:
+        conn.close()
+
+def get_product_by_id(product_id: int) -> tuple:
+    try:
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+        c.execute(
+            '''SELECT id, product_name, product_description, domain, offerings 
+               FROM products 
+               WHERE id = ?''',
+            (product_id,)
+        )
+        return c.fetchone()
     finally:
         conn.close()
 

@@ -1,23 +1,24 @@
 import streamlit as st
-from database import save_report, get_user_reports
-import json
+import pandas as pd
+from database import save_product, get_user_products
 
 def show_customer_product_page():
     st.header("Product Details Management")
     
-    # Get existing product details if any
-    product_reports = get_user_reports(st.session_state.email, "product_details")
+    st.subheader("Your Products")
     
-    current_details = {}
-    if product_reports:
-        report = product_reports[0]  # Most recent report
-        current_details = {
-            "product_name": report[2],
-            "product_description": json.loads(report[1]).get("product_description", ""),
-            "domain": report[3],
-            "offerings": report[4]
-        }
+    # Get existing products
+    products = get_user_products(st.session_state.email)
     
+    # Display existing products in a table
+    if products:
+        product_df = pd.DataFrame(
+            products,
+            columns=['ID', 'Product Name', 'Description', 'Domain', 'Offerings', 'Created At']
+        )
+        st.dataframe(product_df, hide_index=True)
+    
+    st.subheader("Add New Product")
     with st.form("product_details_form"):
         product_name = st.text_input(
             "Product Name", 
@@ -45,22 +46,18 @@ def show_customer_product_page():
         submitted = st.form_submit_button("Save Product Details")
         
         if submitted and all([product_name, product_description, domain, offerings]):
-            product_data = {
-                "product_name": product_name,
-                "product_description": product_description,
-                "domain": domain,
-                "offerings": offerings
-            }
-            
             # Save to database
-            save_report(
+            if save_product(
                 st.session_state.email,
-                "product_details",
-                json.dumps(product_data),
                 product_name,
+                product_description,
                 domain,
                 offerings
-            )
+            ):
+                st.success("Product details saved successfully!")
+                st.rerun()  # Refresh the page to show the new product
+            else:
+                st.error("Failed to save product details")
             
             st.success("Product details saved successfully!")
             
