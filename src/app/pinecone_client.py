@@ -4,6 +4,7 @@ from openai import OpenAI
 import os
 import asyncio
 from dotenv import load_dotenv
+import uuid
 
 load_dotenv()
 
@@ -113,7 +114,7 @@ class PineconeRAG:
         vectors = []
         for i, (chunk, emb) in enumerate(zip(all_chunks, embeddings)):
             vector = {
-                "id": f"doc_{i}",
+                "id": f"doc_{str(uuid.uuid4())}",
                 "values": emb,
                 "metadata": {
                     "text": chunk,
