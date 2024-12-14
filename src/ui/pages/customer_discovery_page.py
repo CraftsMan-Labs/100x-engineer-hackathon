@@ -1,11 +1,24 @@
 import streamlit as st
-from database import save_report
+from database import save_report, get_user_reports
 from api_code import customer_discovery
 import json
 
 def show_customer_discovery_page():
     st.header("Customer Discovery")
     
+    # Show existing reports in an expander
+    with st.expander("View Previous Customer Discovery Reports"):
+        reports = get_user_reports(st.session_state.email)
+        customer_reports = [r for r in reports if r[0] == "customer_discovery"]
+        
+        if customer_reports:
+            for report_type, report_data, product_name, created_at in customer_reports:
+                st.subheader(f"{product_name} ({created_at})")
+                st.json(json.loads(report_data))
+        else:
+            st.info("No previous customer discovery reports found.")
+    
+    st.subheader("New Customer Discovery")
     with st.form("customer_discovery_form"):
         product_name = st.text_input("Product Name")
         product_description = st.text_area("Product Description")

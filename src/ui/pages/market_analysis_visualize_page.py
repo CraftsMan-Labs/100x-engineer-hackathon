@@ -1,11 +1,27 @@
 import streamlit as st
-from database import save_report
+from database import save_report, get_user_reports
 from api_code import market_analysis_visualise, img_b64_str_to_pil_image
 import json
 
 def show_market_analysis_visualize_page():
     st.header("Market Analysis Visualization")
     
+    # Show existing reports in an expander
+    with st.expander("View Previous Market Visualizations"):
+        reports = get_user_reports(st.session_state.email)
+        visual_reports = [r for r in reports if r[0] == "market_visualization"]
+        
+        if visual_reports:
+            for report_type, report_data, product_name, created_at in visual_reports:
+                st.subheader(f"{product_name} ({created_at})")
+                report_json = json.loads(report_data)
+                if "img" in report_json:
+                    st.image(img_b64_str_to_pil_image(report_json["img"]))
+                st.json(report_json)
+        else:
+            st.info("No previous market visualizations found.")
+    
+    st.subheader("New Market Visualization")
     with st.form("market_visualization_form"):
         domain = st.text_input("Domain")
         offerings = st.text_area("Offerings")
