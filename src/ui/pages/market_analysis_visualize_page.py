@@ -3,6 +3,43 @@ from database import save_report, get_user_reports, get_user_products
 from api_code import market_analysis_visualise, img_b64_str_to_pil_image
 import json
 
+def json_to_markdown(data: dict) -> str:
+    """Convert market analysis visualization JSON response to readable markdown"""
+    markdown = []
+    
+    # Add visualization image if present
+    if "img" in data:
+        markdown.append("## Market Trend Visualization")
+        
+    # Add metadata if present
+    if "metadata" in data:
+        metadata = data["metadata"]
+        markdown.append("\n## Analysis Metadata")
+        if "title" in metadata:
+            markdown.append(f"\n### {metadata['title']}")
+        
+        markdown.append("\n**Analysis Details:**")
+        markdown.append(f"- **Date Generated:** {metadata['date_generated'][:10]}")
+        markdown.append(f"- **X-Axis:** {metadata['x_axis_label']}")
+        markdown.append(f"- **Y-Axis:** {metadata['y_axis_label']}")
+        
+        if "metrics" in metadata:
+            markdown.append("\n**Tracked Metrics:**")
+            for metric in metadata["metrics"]:
+                markdown.append(f"- {metric}")
+    
+    # Add reason if present
+    if "reason" in data:
+        markdown.append(f"\n### Analysis Reason\n{data['reason']}")
+    
+    # Add insights if present
+    if "insights" in data:
+        markdown.append("\n### Key Insights")
+        for insight in data["insights"]:
+            markdown.append(f"- {insight}")
+            
+    return "\n".join(markdown)
+
 def show_market_analysis_visualize_page():
     st.header("Market Analysis Visualization")
     
@@ -17,7 +54,7 @@ def show_market_analysis_visualize_page():
             report_json = json.loads(report[1])
             if "img" in report_json:
                 st.image(img_b64_str_to_pil_image(report_json["img"]))
-            st.json(report_json)
+            st.markdown(json_to_markdown(report_json))
         else:
             st.info("No previous market visualizations found.")
     
